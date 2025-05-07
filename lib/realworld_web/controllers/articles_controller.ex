@@ -48,6 +48,12 @@ defmodule RealworldWeb.ArticlesController do
   def show(conn, %{"slug" => slug}) do
     current_user = conn.assigns.current_user
 
+    if current_user == nil do
+      conn
+      |> put_flash(:error, "You Must Login ")
+      |> redirect(to: ~p"/login")
+    end
+
     with {:ok, article} <-
            Realworld.Articles.get_article_by_slug(slug,
              load: [:user, :favorites_count, :is_favorited, comments: :user],
